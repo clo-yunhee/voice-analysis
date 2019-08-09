@@ -1,26 +1,46 @@
 import React from 'react';
-import logo from './logo.svg';
+import Grid from '@material-ui/core/Grid';
 import './App.css';
+import VoiceAnalyser from './analyser/VoiceAnalyser'
+import Footer from "./components/Footer";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends React.PureComponent {
+
+  constructor(props) {
+    super(props);
+  }
+
+  componentDidMount() {
+    this.analyser = new VoiceAnalyser();
+
+    const callback = () => {
+      window.requestAnimationFrame(callback);
+      this.analyser.drawSpectrogram(this.canvas, 'wideband');
+    };
+    callback();
+  }
+
+  render() {
+    return (
+        <div className="App">
+          <div className="App-wrapper">
+            <Grid
+                container
+                spacing={4}
+                direction="column"
+                alignItems="flex-start"
+                alignContent="flex-start"
+                className="App-container"
+            >
+              <Grid item>
+                <canvas id="canvas" ref={r => this.canvas = r} width={854} height={480}/>
+              </Grid>
+            </Grid>
+          </div>
+          <Footer/>
+        </div>
+    );
+  }
 }
 
 export default App;
